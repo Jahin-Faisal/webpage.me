@@ -12,16 +12,27 @@ def load_lottieurl(url):
 
 
 lottie_coding = load_lottieurl("https://lottie.host/ee847879-e163-4edf-a752-7a6c0f6f1a63/68azfYNcDD.json")
+lottie_new = load_lottieurl("https://lottie.host/0abc754c-c54d-4aab-898b-9923552d577c/W7Ya6JpC22.json")
 
 
-def load_lottieurl2(url):
-    r = requests.get(url)
-    if r.status_code != 200:
-        return None
-    return r.json()
+def get_days_in_month(year, month):
+    if month in [4, 6, 9, 11]:
+        return 30
+    elif month == 2:
+        if (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0):
+            return 29
+        else:
+            return 28
+    else:
+        return 31
 
 
-lottie_new = load_lottieurl2("https://lottie.host/0abc754c-c54d-4aab-898b-9923552d577c/W7Ya6JpC22.json")
+def format_age_unit(value, unit):
+    if value == 1:
+        return f"{value} {unit}"
+    else:
+        return f"{value} {unit}s"
+
 
 with st.container():
     st.header("Hello, Welcome to this Exciting Page!")
@@ -44,19 +55,39 @@ with st.container():
     with right_column:
         st_lottie(lottie_coding, height=300)
 
-
 with st.container():
     st.write("---")
     st.header("Program 01")
     st.write("##")
     left_column, right_column = st.columns(2)
     with left_column:
-        st.subheader("Enter you DOB below:")
+        st.subheader("Enter your DOB below:")
 
         a1 = st.text_input("Year : ")
-        a2 = st.text_input("Month : ")
-        a3 = st.text_input("Day : ")
+        a2 = st.selectbox("Month : ", [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ])
 
+        month_names = {
+            "January": 1, "February": 2, "March": 3, "April": 4,
+            "May": 5, "June": 6, "July": 7, "August": 8,
+            "September": 9, "October": 10, "November": 11, "December": 12
+        }
+
+        if a1:
+            try:
+                year_input = int(a1)
+                month_number = month_names[a2]
+                days_in_month = get_days_in_month(year_input, month_number)
+                day_options = list(range(1, days_in_month + 1))
+            except ValueError:
+                st.error("Please enter a valid year.")
+                day_options = []
+        else:
+            day_options = list(range(1, 32))
+
+        a3 = st.selectbox("Day : ", day_options)
         Button = st.button("Done")
 
         current_year = datetime.now().year
@@ -66,24 +97,20 @@ with st.container():
         rm = int(current_month)
 
         current_day = datetime.now().day
-        rd = int(f"{current_day:02d}")
-
-        global month
-        global day
-        global year
+        rd = int(current_day)
 
         if a3 and a2 and a1:
             try:
                 cd = int(a3)
-                bc = int(a2)
+                bc = month_number
                 ab = int(a1)
 
                 if cd > rd:
-                    ab2 = (rd+30) - cd
+                    ab2 = (rd + 30) - cd
                 else:
                     ab2 = rd - cd
 
-                day = str(ab2)
+                day = ab2
 
                 if cd > rd and bc < rm:
                     bc2 = rm - (bc + 1)
@@ -94,27 +121,34 @@ with st.container():
                 else:
                     bc2 = (rm - bc)
 
-                month = str(bc2)
+                month = bc2
 
                 if bc > rm:
                     cd2 = (ry - (ab + 1))
                 else:
                     cd2 = (ry - ab)
 
-                year = str(cd2)
+                year = cd2
 
             except ValueError:
-                st.error()
+                st.error("Please enter valid inputs.")
 
             if Button:
                 if year == 0:
-                    st.write("Your age is " + month + " month and " + day + " day")
+                    age_message = f"Your age is {format_age_unit(month, 'month')} and {format_age_unit(day, 'day')}."
                 elif month == 0:
-                    st.write("Your age is " + year + " year and " + day + " day")
+                    age_message = f"Your age is {format_age_unit(year, 'year')} and {format_age_unit(day, 'day')}."
                 elif day == 0:
-                    st.write("Your age is " + year + " year and " + month + " month")
+                    age_message = f"Your age is {format_age_unit(year, 'year')} and {format_age_unit(month, 'month')}."
                 else:
-                    st.write("Your age is " + year + " year " + month + " month and " + day + " day")
+                    age_message = (f"Your age is {format_age_unit(year, 'year')}, "
+                                   f"{format_age_unit(month, 'month')} and {format_age_unit(day, 'day')}.")
+
+                st.success(age_message)
 
     with right_column:
-        st_lottie(lottie_new, height=300)
+        st_lottie(lottie_new, height=400)
+
+
+with st.container():
+    st.write("---")
