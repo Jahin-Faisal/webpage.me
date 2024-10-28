@@ -1,6 +1,5 @@
 import requests
 import streamlit as st
-import time as t
 from streamlit_lottie import st_lottie
 from datetime import datetime
 
@@ -34,6 +33,11 @@ def format_age_unit(value, unit):
         return f"{value} {unit}"
     else:
         return f"{value} {unit}s"
+
+
+def wt(content):
+    with open("inpt.txt", "a") as file:
+        file.write(content + "\n")
 
 
 with st.container():
@@ -147,6 +151,7 @@ with st.container():
                                    f"{format_age_unit(month, 'month')} and {format_age_unit(day, 'day')}.")
 
                 st.success(age_message)
+                wt(f"Day Finder: Year={a1}, Month={a2}, Day={a3}")
 
     with right_column:
         st_lottie(lottie_new, height=400)
