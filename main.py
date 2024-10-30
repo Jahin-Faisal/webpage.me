@@ -15,7 +15,7 @@ def append_to_google_sheet(data):
     client = gspread.authorize(creds)
 
     # Open your Google Sheet (replace "Your Google Sheet Name" with the actual name of your sheet)
-    sheet = client.open("Webinfogets").sheet1
+    sheet = client.open("Webinfogets.xls").sheet1
 
     # Append the data as a new row (replace with your actual data structure)
     sheet.append_row(data)
