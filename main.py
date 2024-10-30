@@ -218,6 +218,7 @@ with st.container():
                     "Wednesday", "Thursday", "Friday"
                 ]
                 st.success(f"The day was {days_of_week[i]}")
+                wt(f"Date Finder: Year={a11}, Month={B}, Day={a33}")
 
             except ValueError:
                 st.error("Invalid input! Please make sure to enter valid data.")
