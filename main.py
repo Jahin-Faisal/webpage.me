@@ -7,18 +7,14 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 
 def append_to_google_sheet(data):
-    # Define the scope
-    scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+    scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
 
-    # Authenticate with the service account
     creds = ServiceAccountCredentials.from_json_keyfile_name("service_account.json", scope)
     client = gspread.authorize(creds)
 
-    # Open your Google Sheet (replace "Your Google Sheet Name" with the actual name of your sheet)
-    sheet = client.open("Webinfogets.xls").sheet1
+    sheet = client.open("Webinfogets").sheet1
 
-    # Append the data as a new row (replace with your actual data structure)
-    sheet.append_row(data)
+    sheet.append_row([data])
 
 
 def load_lottieurl(url):
@@ -46,10 +42,7 @@ def get_days_in_month(year, month):
 
 
 def format_age_unit(value, unit):
-    if value == 1:
-        return f"{value} {unit}"
-    else:
-        return f"{value} {unit}s"
+    return f"{value} {unit}" if value == 1 else f"{value} {unit}s"
 
 
 def wt(content):
@@ -59,7 +52,9 @@ def wt(content):
 
 with st.container():
     st.header("Hello, Welcome to this Exciting Page!")
-    st.write("""A bunch of programs are here to entertain you! You can explore new customized helpful features here, too! So, without wasting anymore time let's get started!!!""")
+    st.write(
+        """A bunch of programs are here to entertain you! You can explore new customized helpful features here, too! So, without wasting anymore time let's get started!!!"""
+    )
 
 with st.container():
     st.write("---")
@@ -111,16 +106,11 @@ with st.container():
             day_options = list(range(1, 32))
 
         a3 = st.selectbox("Day : ", day_options)
-        Button = st.button("Done")
+        button = st.button("Done")
 
         current_year = datetime.now().year
-        ry = int(current_year)
-
         current_month = datetime.now().month
-        rm = int(current_month)
-
         current_day = datetime.now().day
-        rd = int(current_day)
 
         if a3 and a2 and a1:
             try:
@@ -128,35 +118,36 @@ with st.container():
                 bc = month_number
                 ab = int(a1)
 
-                if cd > rd:
-                    ab2 = (rd + 30) - cd
+                # Age calculation logic
+                if cd > current_day:
+                    ab2 = (current_day + 30) - cd
                 else:
-                    ab2 = rd - cd
+                    ab2 = current_day - cd
 
                 day = ab2
 
-                if cd > rd and bc < rm:
-                    bc2 = rm - (bc + 1)
-                elif cd > rd and bc > rm:
-                    bc2 = (rm + 12) - (bc + 1)
-                elif bc > rm:
-                    bc2 = (rm + 12) - bc
+                if cd > current_day and bc < current_month:
+                    bc2 = current_month - (bc + 1)
+                elif cd > current_day and bc > current_month:
+                    bc2 = (current_month + 12) - (bc + 1)
+                elif bc > current_month:
+                    bc2 = (current_month + 12) - bc
                 else:
-                    bc2 = (rm - bc)
+                    bc2 = (current_month - bc)
 
                 month = bc2
 
-                if bc > rm:
-                    cd2 = (ry - (ab + 1))
+                if bc > current_month:
+                    cd2 = (current_year - (ab + 1))
                 else:
-                    cd2 = (ry - ab)
+                    cd2 = (current_year - ab)
 
                 year = cd2
 
             except ValueError:
                 st.error("Please enter valid inputs.")
 
-            if Button:
+            if button:
                 if year == 0:
                     age_message = f"Your age is {format_age_unit(month, 'month')} and {format_age_unit(day, 'day')}."
                 elif month == 0:
@@ -169,10 +160,9 @@ with st.container():
 
                 st.success(age_message)
                 append_to_google_sheet(age_message)
-                
+
     with right_column:
         st_lottie(lottie_new, height=400)
-
 
 with st.container():
     st.write("---")
@@ -211,9 +201,9 @@ with st.container():
             day_options = list(range(1, 32))
 
         a33 = st.selectbox("Day of the date: ", day_options)
-        Button = st.button("Get the day!")
+        button = st.button("Get the day!")
 
-        if Button:
+        if button:
             try:
                 year = int(a11)
                 e = year % 4
@@ -236,13 +226,15 @@ with st.container():
                 ]
                 st.success(f"The day was {days_of_week[i]}")
                 append_to_google_sheet(f"The day was {days_of_week[i]}")
-                
+                append_to_google_sheet(a33)
+                append_to_google_sheet(B)
+                append_to_google_sheet(year)
+
             except ValueError:
                 st.error("Invalid input! Please make sure to enter valid data.")
 
     with right_column:
         st_lottie(lottie_new2, height=400)
-
 
 with st.container():
     st.write("---")
