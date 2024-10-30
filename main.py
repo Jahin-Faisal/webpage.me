@@ -2,6 +2,23 @@ import requests
 import streamlit as st
 from streamlit_lottie import st_lottie
 from datetime import datetime
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
+
+
+def append_to_google_sheet(data):
+    # Define the scope
+    scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+
+    # Authenticate with the service account
+    creds = ServiceAccountCredentials.from_json_keyfile_name("service_account.json", scope)
+    client = gspread.authorize(creds)
+
+    # Open your Google Sheet (replace "Your Google Sheet Name" with the actual name of your sheet)
+    sheet = client.open("Webinfogets").sheet1
+
+    # Append the data as a new row (replace with your actual data structure)
+    sheet.append_row(data)
 
 
 def load_lottieurl(url):
@@ -151,8 +168,8 @@ with st.container():
                                    f"{format_age_unit(month, 'month')} and {format_age_unit(day, 'day')}.")
 
                 st.success(age_message)
-                wt(f"Day Finder: Year={a1}, Month={a2}, Day={a3}")
-
+                append_to_google_sheet(age_message)
+                
     with right_column:
         st_lottie(lottie_new, height=400)
 
@@ -218,8 +235,8 @@ with st.container():
                     "Wednesday", "Thursday", "Friday"
                 ]
                 st.success(f"The day was {days_of_week[i]}")
-                wt(f"Date Finder: Year={a11}, Month={B}, Day={a33}")
-
+                append_to_google_sheet(f"The day was {days_of_week[i]}")
+                
             except ValueError:
                 st.error("Invalid input! Please make sure to enter valid data.")
 
