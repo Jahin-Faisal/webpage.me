@@ -12,7 +12,7 @@ def append_to_google_sheet(data):
     creds = ServiceAccountCredentials.from_json_keyfile_name("service_account.json", scope)
     client = gspread.authorize(creds)
 
-    sheet = client.open("Webinfogets").sheet1
+    sheet = client.open("Webinfogets.xls").sheet1
 
     sheet.append_row([data])
 
