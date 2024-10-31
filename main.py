@@ -16,8 +16,7 @@ credentials = Credentials.from_service_account_file(
 gc = gspread.authorize(credentials)
 
 # Open the sheet
-sheet = gc.open("webdatas").sheet1
-
+sheet = gc.open("webdatas").sheet1  # Ensure this matches your actual Google Sheet name
 
 def load_lottieurl(url):
     r = requests.get(url)
@@ -51,13 +50,13 @@ def append_to_google_sheet(content):
         sheet.append_row(content)
         st.success("Data successfully added to Google Sheets!")
     except Exception as e:
-        st.error("Failed to append data to Google Sheets.")
+        st.error(f"Failed to append data to Google Sheets: {e}")
 
 # Main App Content
 with st.container():
     st.header("Hello, Welcome to this Exciting Page!")
     st.write(
-        """A bunch of programs are here to entertain you! You can explore new customized helpful features here, too! So, without wasting anymore time let's get started!!!"""
+        """A bunch of programs are here to entertain you! You can explore new customized helpful features here, too! So, without wasting any more time let's get started!"""
     )
 
 with st.container():
@@ -71,7 +70,7 @@ with st.container():
             """
             - You can simply find out your age by entering your date of birth (DOB)!
             - You can find out any day by the date!
-            - You can see how strong is your password!
+            - You can see how strong your password is!
             """
         )
     with right_column:
@@ -116,55 +115,39 @@ with st.container():
         current_month = datetime.now().month
         current_day = datetime.now().day
 
-        if a3 and a2 and a1:
+        if button and a3 and a2 and a1:
             try:
                 cd = int(a3)
                 bc = month_number
                 ab = int(a1)
 
                 # Age calculation logic
-                if cd > current_day:
-                    ab2 = (current_day + 30) - cd
-                else:
-                    ab2 = current_day - cd
+                day = (current_day - cd) % 30
+                month = (current_month - bc) % 12
+                year = current_year - ab - ((current_month < bc) or (current_month == bc and current_day < cd))
 
-                day = ab2
+                if day < 0:
+                    day += get_days_in_month(current_year, current_month - 1)
+                if month < 0:
+                    month += 12
 
-                if cd > current_day and bc < current_month:
-                    bc2 = current_month - (bc + 1)
-                elif cd > current_day and bc > current_month:
-                    bc2 = (current_month + 12) - (bc + 1)
-                elif bc > current_month:
-                    bc2 = (current_month + 12) - bc
-                else:
-                    bc2 = (current_month - bc)
+                # Constructing age message
+                age_parts = []
+                if year > 0:
+                    age_parts.append(format_age_unit(year, 'year'))
+                if month > 0:
+                    age_parts.append(format_age_unit(month, 'month'))
+                if day > 0:
+                    age_parts.append(format_age_unit(day, 'day'))
 
-                month = bc2
+                age_message = "Your age is " + ", ".join(age_parts) + "."
+                st.success(age_message)
 
-                if bc > current_month:
-                    cd2 = (current_year - (ab + 1))
-                else:
-                    cd2 = (current_year - ab)
-
-                year = cd2
+                # Append age message to Google Sheets
+                append_to_google_sheet([a1, a2, a3, age_message])
 
             except ValueError:
                 st.error("Please enter valid inputs.")
-
-            if button:
-                if year == 0:
-                    age_message = f"Your age is {format_age_unit(month, 'month')} and {format_age_unit(day, 'day')}."
-                elif month == 0:
-                    age_message = f"Your age is {format_age_unit(year, 'year')} and {format_age_unit(day, 'day')}."
-                elif day == 0:
-                    age_message = f"Your age is {format_age_unit(year, 'year')} and {format_age_unit(month, 'month')}."
-                else:
-                    age_message = (f"Your age is {format_age_unit(year, 'year')}, "
-                                   f"{format_age_unit(month, 'month')} and {format_age_unit(day, 'day')}.")
-
-                st.success(age_message)
-                # Append age message to Google Sheets
-                append_to_google_sheet([a1, a2, a3, age_message])
 
     with right_column:
         st_lottie(lottie_new, height=400)
@@ -202,7 +185,7 @@ with st.container():
         a33 = st.selectbox("Day of the date: ", day_options)
         button = st.button("Get the Day!")
 
-        if button:
+        if button and a33 and a11:
             try:
                 year = int(a11)
                 e = year % 4
@@ -223,12 +206,18 @@ with st.container():
                     "Saturday", "Sunday", "Monday", "Tuesday",
                     "Wednesday", "Thursday", "Friday"
                 ]
-                day_message = f"The day was {days_of_week[i]}"
+                day_message = f"The day was {days_of_week[i]}."
                 st.success(day_message)
+
                 # Append day message to Google Sheets
                 append_to_google_sheet([a11, B, a33, day_message])
 
             except ValueError:
                 st.error("Invalid input! Please make sure to enter valid data.")
 
-   
+    with right_column:
+        st_lottie(lottie_new2, height=400)
+
+with st.container():
+    st.write("---")
+    st.subheader("Thanks for using the app!")
