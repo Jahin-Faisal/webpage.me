@@ -3,18 +3,17 @@ import streamlit as st
 from streamlit_lottie import st_lottie
 from datetime import datetime
 import gspread
-from oauth2client.service_account import ServiceAccountCredentials
-
+from google.oauth2.service_account import Credentials
 
 def append_to_google_sheet(data):
     scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
-
-    creds = ServiceAccountCredentials.from_json_keyfile_name("service_account.json", scope)
+    creds = Credentials.from_service_account_file("service_account.json", scopes=scope)
     client = gspread.authorize(creds)
 
     sheet = client.open("Webinfogets").sheet1
 
     sheet.append_row([data])
+
 
 
 def load_lottieurl(url):
