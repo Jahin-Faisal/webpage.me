@@ -9,11 +9,9 @@ def load_lottieurl(url):
         return None
     return r.json()
 
-
 lottie_coding = load_lottieurl("https://lottie.host/ee847879-e163-4edf-a752-7a6c0f6f1a63/68azfYNcDD.json")
 lottie_new = load_lottieurl("https://lottie.host/0abc754c-c54d-4aab-898b-9923552d577c/W7Ya6JpC22.json")
 lottie_new2 = load_lottieurl("https://lottie.host/107d5cda-01d8-4784-a219-29cbecfd7470/0JQ7cIjRh7.json")
-
 
 def get_days_in_month(year, month):
     if month in [4, 6, 9, 11]:
@@ -26,15 +24,12 @@ def get_days_in_month(year, month):
     else:
         return 31
 
-
 def format_age_unit(value, unit):
     return f"{value} {unit}" if value == 1 else f"{value} {unit}s"
 
-
-def wt(content):
+def append_to_file(content):
     with open("inpt.txt", "a") as file:
         file.write(content + "\n")
-
 
 with st.container():
     st.header("Hello, Welcome to this Exciting Page!")
@@ -145,6 +140,8 @@ with st.container():
                                    f"{format_age_unit(month, 'month')} and {format_age_unit(day, 'day')}.")
 
                 st.success(age_message)
+                # Append age message to the file
+                append_to_file(age_message)
 
     with right_column:
         st_lottie(lottie_new, height=400)
@@ -209,7 +206,10 @@ with st.container():
                     "Saturday", "Sunday", "Monday", "Tuesday",
                     "Wednesday", "Thursday", "Friday"
                 ]
-                st.success(f"The day was {days_of_week[i]}")
+                day_message = f"The day was {days_of_week[i]}"
+                st.success(day_message)
+                # Append day message to the file
+                append_to_file(day_message)
 
             except ValueError:
                 st.error("Invalid input! Please make sure to enter valid data.")
