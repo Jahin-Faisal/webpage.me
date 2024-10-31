@@ -4,15 +4,18 @@ from streamlit_lottie import st_lottie
 from datetime import datetime
 import gspread
 
-# Google Sheets Setup
+# Google Sheets Setup# Google Sheets Setup
 def setup_gspread(sheet_name):
     try:
         gc = gspread.service_account(filename="credentials.json")
         sheet = gc.open(sheet_name).sheet1
         return sheet
+    except gspread.exceptions.SpreadsheetNotFound:
+        st.error(f"Spreadsheet '{sheet_name}' not found. Please check the name.")
+        st.stop()  # Stops execution if the sheet isn't found
     except Exception as e:
-        st.error("Error accessing Google Sheets. Please check credentials and sheet name.")
-        st.stop()  # Stops execution if there's an issue connecting
+        st.error(f"Error accessing Google Sheets: {e}")
+        st.stop()  # Stops execution if there's any other error
 
 sheet = setup_gspread("webdatas")  # Replace with your actual Google Sheet name
 
