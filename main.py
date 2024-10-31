@@ -5,11 +5,11 @@ from datetime import datetime
 import gspread
 
 # Google Sheets Setup
-def setup_gspread(webdatas):
+def setup_gspread(webdatas.xls):
     gc = gspread.service_account(filename="credentials.json")
-    return gc.open(webdatas).sheet1
+    return gc.open(webdatas.xls).sheet1
 
-sheet = setup_gspread("webdatas")  # Replace with the actual sheet name
+sheet = setup_gspread("webdatas.xls")  # Replace with the actual sheet name
 
 def load_lottieurl(url):
     r = requests.get(url)
