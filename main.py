@@ -5,9 +5,9 @@ from datetime import datetime
 import gspread
 
 # Google Sheets Setup
-def setup_gspread(webdatas.xls):
+def setup_gspread(sheet_name):
     gc = gspread.service_account(filename="credentials.json")
-    return gc.open(webdatas.xls).sheet1
+    return gc.open(sheet_name).sheet1
 
 sheet = setup_gspread("webdatas.xls")  # Replace with the actual sheet name
 
