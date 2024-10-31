@@ -2,6 +2,14 @@ import requests
 import streamlit as st
 from streamlit_lottie import st_lottie
 from datetime import datetime
+import gspread
+
+# Google Sheets Setup
+def setup_gspread(sheet_name):
+    gc = gspread.service_account(filename="credentials.json")
+    return gc.open(sheet_name).sheet1
+
+sheet = setup_gspread("Your Google Sheet Name")  # Replace with the actual sheet name
 
 def load_lottieurl(url):
     r = requests.get(url)
@@ -27,10 +35,10 @@ def get_days_in_month(year, month):
 def format_age_unit(value, unit):
     return f"{value} {unit}" if value == 1 else f"{value} {unit}s"
 
-def append_to_file(content):
-    with open("inpt.txt", "a") as file:
-        file.write(content + "\n")
+def append_to_google_sheet(content):
+    sheet.append_row(content)
 
+# Main App Content
 with st.container():
     st.header("Hello, Welcome to this Exciting Page!")
     st.write(
@@ -56,7 +64,7 @@ with st.container():
 
 with st.container():
     st.write("---")
-    st.header("Program 01")
+    st.header("Program 01: Age Calculator")
     st.write("##")
     left_column, right_column = st.columns(2)
     with left_column:
@@ -87,7 +95,7 @@ with st.container():
             day_options = list(range(1, 32))
 
         a3 = st.selectbox("Day : ", day_options)
-        button = st.button("Done")
+        button = st.button("Calculate Age")
 
         current_year = datetime.now().year
         current_month = datetime.now().month
@@ -140,15 +148,15 @@ with st.container():
                                    f"{format_age_unit(month, 'month')} and {format_age_unit(day, 'day')}.")
 
                 st.success(age_message)
-                # Append age message to the file
-                append_to_file(age_message)
+                # Append age message to Google Sheets
+                append_to_google_sheet([a1, a2, a3, age_message])
 
     with right_column:
         st_lottie(lottie_new, height=400)
 
 with st.container():
     st.write("---")
-    st.header("Program 02")
+    st.header("Program 02: Day Finder")
     st.write("##")
     left_column, right_column = st.columns(2)
     with left_column:
@@ -183,7 +191,7 @@ with st.container():
             day_options = list(range(1, 32))
 
         a33 = st.selectbox("Day of the date: ", day_options)
-        button = st.button("Get the day!")
+        button = st.button("Get the Day!")
 
         if button:
             try:
@@ -208,8 +216,8 @@ with st.container():
                 ]
                 day_message = f"The day was {days_of_week[i]}"
                 st.success(day_message)
-                # Append day message to the file
-                append_to_file(day_message)
+                # Append day message to Google Sheets
+                append_to_google_sheet([a11, B, a33, day_message])
 
             except ValueError:
                 st.error("Invalid input! Please make sure to enter valid data.")
@@ -219,4 +227,4 @@ with st.container():
 
 with st.container():
     st.write("---")
-    st.subheader("Coming more soon...")
+    st.subheader("Thanks for using the app!")
