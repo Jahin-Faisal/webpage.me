@@ -3,6 +3,13 @@ import streamlit as st
 from streamlit_lottie import st_lottie
 from datetime import datetime
 
+# Function to load Lottie animations
+def load_lottieurl(url):
+    response = requests.get(url)
+    if response.status_code != 200:
+        return None
+    return response.json()
+
 # Load animations
 lottie_coding = load_lottieurl("https://lottie.host/ee847879-e163-4edf-a752-7a6c0f6f1a63/68azfYNcDD.json")
 lottie_new = load_lottieurl("https://lottie.host/0abc754c-c54d-4aab-898b-9923552d577c/W7Ya6JpC22.json")
@@ -21,7 +28,6 @@ def get_days_in_month(year, month):
 
 def format_age_unit(value, unit):
     return f"{value} {unit}" if value == 1 else f"{value} {unit}s"
-
 
 with st.container():
     st.header("Hello, Welcome to this Exciting Page!")
@@ -54,8 +60,8 @@ with st.container():
     with left_column:
         st.subheader("Enter your DOB below:")
 
-        a1 = st.text_input("Year : ", placeholder="maximum this year")
-        a2 = st.selectbox("Month : ", [
+        a1 = st.text_input("Year: ", placeholder="maximum this year")
+        a2 = st.selectbox("Month: ", [
             "January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December"
         ])
@@ -76,9 +82,9 @@ with st.container():
                 st.error("Please enter a valid year.")
                 day_options = []
         else:
-            day_options = list(range(1, 32))
+            day_options = []
 
-        a3 = st.selectbox("Day : ", day_options)
+        a3 = st.selectbox("Day: ", day_options)
         button = st.button("Calculate Age")
 
         current_year = datetime.now().year
