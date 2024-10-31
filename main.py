@@ -10,7 +10,7 @@ scopes = ["https://www.googleapis.com/auth/spreadsheets"]
 
 # Load credentials
 credentials = Credentials.from_service_account_file(
-    'credentials.json', scopes=scopes)
+    'polished-trail-424615-n3-1ecced1ab166.json', scopes=scopes)
 
 # Authorize the client
 gc = gspread.authorize(credentials)
