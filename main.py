@@ -9,7 +9,7 @@ def setup_gspread(sheet_name):
     gc = gspread.service_account(filename="credentials.json")
     return gc.open(sheet_name).sheet1
 
-sheet = setup_gspread("Your Google Sheet Name")  # Replace with the actual sheet name
+sheet = setup_gspread("webdatas")  # Replace with the actual sheet name
 
 def load_lottieurl(url):
     r = requests.get(url)
