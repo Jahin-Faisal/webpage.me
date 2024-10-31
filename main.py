@@ -6,10 +6,15 @@ import gspread
 
 # Google Sheets Setup
 def setup_gspread(sheet_name):
-    gc = gspread.service_account(filename="credentials.json")
-    return gc.open(sheet_name).sheet1
+    try:
+        gc = gspread.service_account(filename="credentials.json")
+        sheet = gc.open(sheet_name).sheet1
+        return sheet
+    except Exception as e:
+        st.error("Error accessing Google Sheets. Please check credentials and sheet name.")
+        st.stop()  # Stops execution if there's an issue connecting
 
-sheet = setup_gspread("webdatas.xls")  # Replace with the actual sheet name
+sheet = setup_gspread("webdatas")  # Replace with your actual Google Sheet name
 
 def load_lottieurl(url):
     r = requests.get(url)
@@ -17,10 +22,12 @@ def load_lottieurl(url):
         return None
     return r.json()
 
+# Load animations
 lottie_coding = load_lottieurl("https://lottie.host/ee847879-e163-4edf-a752-7a6c0f6f1a63/68azfYNcDD.json")
 lottie_new = load_lottieurl("https://lottie.host/0abc754c-c54d-4aab-898b-9923552d577c/W7Ya6JpC22.json")
 lottie_new2 = load_lottieurl("https://lottie.host/107d5cda-01d8-4784-a219-29cbecfd7470/0JQ7cIjRh7.json")
 
+# Date handling functions
 def get_days_in_month(year, month):
     if month in [4, 6, 9, 11]:
         return 30
@@ -35,8 +42,13 @@ def get_days_in_month(year, month):
 def format_age_unit(value, unit):
     return f"{value} {unit}" if value == 1 else f"{value} {unit}s"
 
+# Append to Google Sheets
 def append_to_google_sheet(content):
-    sheet.append_row(content)
+    try:
+        sheet.append_row(content)
+        st.success("Data successfully added to Google Sheets!")
+    except Exception as e:
+        st.error("Failed to append data to Google Sheets.")
 
 # Main App Content
 with st.container():
@@ -168,12 +180,6 @@ with st.container():
             "July", "August", "September", "October", "November", "December"
         ])
 
-        month_names = {
-            "January": 1, "February": 2, "March": 3, "April": 4,
-            "May": 5, "June": 6, "July": 7, "August": 8,
-            "September": 9, "October": 10, "November": 11, "December": 12
-        }
-
         B = month_names[B]
         if a11:
             try:
@@ -222,9 +228,4 @@ with st.container():
             except ValueError:
                 st.error("Invalid input! Please make sure to enter valid data.")
 
-    with right_column:
-        st_lottie(lottie_new2, height=400)
-
-with st.container():
-    st.write("---")
-    st.subheader("Thanks for using the app!")
+   
