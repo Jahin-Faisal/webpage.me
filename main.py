@@ -2,34 +2,12 @@ import requests
 import streamlit as st
 from streamlit_lottie import st_lottie
 from datetime import datetime
-import gspread
-from google.oauth2.service_account import Credentials
-
-# Define the scopes
-scopes = ["https://www.googleapis.com/auth/spreadsheets"]
-
-# Load credentials
-credentials = Credentials.from_service_account_file(
-    'polished-trail-424615-n3-1ecced1ab166.json', scopes=scopes)
-
-# Authorize the client
-gc = gspread.authorize(credentials)
-
-# Open the sheet
-sheet = gc.open("webdatas").sheet1  # Ensure this matches your actual Google Sheet name
-
-def load_lottieurl(url):
-    r = requests.get(url)
-    if r.status_code != 200:
-        return None
-    return r.json()
 
 # Load animations
 lottie_coding = load_lottieurl("https://lottie.host/ee847879-e163-4edf-a752-7a6c0f6f1a63/68azfYNcDD.json")
 lottie_new = load_lottieurl("https://lottie.host/0abc754c-c54d-4aab-898b-9923552d577c/W7Ya6JpC22.json")
 lottie_new2 = load_lottieurl("https://lottie.host/107d5cda-01d8-4784-a219-29cbecfd7470/0JQ7cIjRh7.json")
 
-# Date handling functions
 def get_days_in_month(year, month):
     if month in [4, 6, 9, 11]:
         return 30
@@ -44,15 +22,7 @@ def get_days_in_month(year, month):
 def format_age_unit(value, unit):
     return f"{value} {unit}" if value == 1 else f"{value} {unit}s"
 
-# Append to Google Sheets
-def append_to_google_sheet(content):
-    try:
-        sheet.append_row(content)
-        st.success("Data successfully added to Google Sheets!")
-    except Exception as e:
-        st.error(f"Failed to append data to Google Sheets: {e}")
 
-# Main App Content
 with st.container():
     st.header("Hello, Welcome to this Exciting Page!")
     st.write(
@@ -121,7 +91,6 @@ with st.container():
                 bc = month_number
                 ab = int(a1)
 
-                # Age calculation logic
                 day = (current_day - cd) % 30
                 month = (current_month - bc) % 12
                 year = current_year - ab - ((current_month < bc) or (current_month == bc and current_day < cd))
@@ -131,7 +100,6 @@ with st.container():
                 if month < 0:
                     month += 12
 
-                # Constructing age message
                 age_parts = []
                 if year > 0:
                     age_parts.append(format_age_unit(year, 'year'))
@@ -142,9 +110,6 @@ with st.container():
 
                 age_message = "Your age is " + ", ".join(age_parts) + "."
                 st.success(age_message)
-
-                # Append age message to Google Sheets
-                append_to_google_sheet([a1, a2, a3, age_message])
 
             except ValueError:
                 st.error("Please enter valid inputs.")
@@ -208,9 +173,6 @@ with st.container():
                 ]
                 day_message = f"The day was {days_of_week[i]}."
                 st.success(day_message)
-
-                # Append day message to Google Sheets
-                append_to_google_sheet([a11, B, a33, day_message])
 
             except ValueError:
                 st.error("Invalid input! Please make sure to enter valid data.")
