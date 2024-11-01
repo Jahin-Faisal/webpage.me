@@ -3,14 +3,13 @@ import streamlit as st
 from streamlit_lottie import st_lottie
 from datetime import datetime
 
-# Function to load Lottie animations
+
 def load_lottieurl(url):
     response = requests.get(url)
     if response.status_code != 200:
         return None
     return response.json()
 
-# Load animations
 lottie_coding = load_lottieurl("https://lottie.host/ee847879-e163-4edf-a752-7a6c0f6f1a63/68azfYNcDD.json")
 lottie_new = load_lottieurl("https://lottie.host/0abc754c-c54d-4aab-898b-9923552d577c/W7Ya6JpC22.json")
 lottie_new2 = load_lottieurl("https://lottie.host/107d5cda-01d8-4784-a219-29cbecfd7470/0JQ7cIjRh7.json")
@@ -188,4 +187,4 @@ with st.container():
 
 with st.container():
     st.write("---")
-    st.subheader("Thanks for using the app!")
+    st.subheader("Coming more soon...")
