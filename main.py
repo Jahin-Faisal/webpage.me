@@ -170,7 +170,11 @@ with st.container():
                 G = G_values[B - 1]
 
                 h = d + f + a33 + G
-                i = h % 7
+                
+                if e == 0:
+                    i = (h % 7) + 1
+                else:
+                    i = h % 7
 
                 days_of_week = [
                     "Saturday", "Sunday", "Monday", "Tuesday",
